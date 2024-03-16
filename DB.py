@@ -1,5 +1,7 @@
 import random
 import sqlite3
+import time
+
 import matplotlib.pyplot as plt
 
 conn = sqlite3.connect('books.sqlite')
@@ -47,7 +49,28 @@ def update_pages_of_book():
     print('Your update result:', cursor.execute("SELECT * FROM books WHERE id = ?", (id,)).fetchone())
 
 
-update_pages_of_book()
+print("Here you see all the results from the book table:\n")
+time.sleep(1.5)
+results = cursor.execute("SELECT * FROM books")
+for line in results:
+    print(line)
+
+first_question = True
+user_answer = ''
+while True:
+    if first_question:
+        user_answer = input('\nDo you want to update the number of pages of the desired book? (y/n): \n')
+        first_question = False
+    else:
+        user_answer = input()
+
+    if user_answer == 'y':
+        update_pages_of_book()
+        break
+    elif user_answer == 'n':
+        break
+    else:
+        print('Please write y or n')
 
 pages_numb_avg = (cursor.execute("SELECT AVG(pages) FROM books")).fetchone()[0]
 long_book = (cursor.execute("SELECT title FROM books WHERE pages = (SELECT MAX(pages) FROM books)")).fetchone()[0]
